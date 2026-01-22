@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5001/api';
+const API_URL = 'https://proyecto-papeleria-back.vercel.app/api';
 
 const getHeaders = () => {
   const user = JSON.parse(localStorage.getItem('user') || 'null');
