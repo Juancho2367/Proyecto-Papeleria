@@ -50,6 +50,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/products', require('./routes/productRoutes'));
 app.use('/api/sales', require('./routes/saleRoutes'));
 app.use('/api/categories', require('./routes/categoryRoutes'));
+app.use('/api/events', require('./routes/eventRoutes'));
 
 // Root route for testing
 app.get('/', (req, res) => {

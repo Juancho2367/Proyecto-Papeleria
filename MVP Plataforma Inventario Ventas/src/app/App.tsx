@@ -9,6 +9,7 @@ import { Statistics } from '@/app/components/Statistics';
 import { Settings } from '@/app/components/Settings';
 import { UserManagement } from '@/app/components/UserManagement';
 import { DailySummary } from '@/app/components/DailySummary';
+import { EventPanel } from '@/app/components/EventPanel';
 import { Toaster } from '@/app/components/ui/sonner';
 
 function AppContent() {
@@ -33,6 +34,8 @@ function AppContent() {
         return <Statistics />;
       case 'users':
         return <UserManagement />;
+      case 'events':
+        return <EventPanel />;
       case 'settings':
         return <Settings />;
       default:
@@ -51,8 +54,6 @@ function AppContent() {
           {renderView()}
         </div>
       </main>
-
-      <Toaster position="top-right" richColors />
     </div>
   );
 }
@@ -61,6 +62,7 @@ export default function App() {
   return (
     <AppProvider>
       <AppContent />
+      <Toaster position="top-right" richColors />
     </AppProvider>
   );
 }

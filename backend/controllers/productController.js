@@ -1,4 +1,5 @@
 const Product = require('../models/Product');
+const { logEvent } = require('../utils/eventLogger');
 
 // @desc    Get all products
 // @route   GET /api/products
@@ -52,6 +53,7 @@ exports.createProduct = async (req, res) => {
     });
 
     const createdProduct = await product.save();
+    await logEvent(req.user.id, 'Creación de Producto', `Se creó el producto "${createdProduct.name}" con código de barras ${createdProduct.barcode}.`);
     res.status(201).json(createdProduct);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -76,6 +78,7 @@ exports.updateProduct = async (req, res) => {
       product.barcode = barcode || product.barcode;
 
       const updatedProduct = await product.save();
+      await logEvent(req.user.id, 'Actualización de Producto', `Se actualizó el producto "${updatedProduct.name}".`);
       res.json(updatedProduct);
     } else {
       res.status(404).json({ message: 'Product not found' });
@@ -93,7 +96,9 @@ exports.deleteProduct = async (req, res) => {
     const product = await Product.findById(req.params.id);
 
     if (product) {
+      const productName = product.name;
       await product.deleteOne();
+      await logEvent(req.user.id, 'Eliminación de Producto', `Se eliminó el producto "${productName}".`);
       res.json({ message: 'Product removed' });
     } else {
       res.status(404).json({ message: 'Product not found' });

@@ -60,6 +60,7 @@ interface AppContextType {
   products: Product[];
   sales: Sale[];
   categories: Category[];
+  events: any[];
   loading: boolean;
   login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
@@ -72,6 +73,7 @@ interface AppContextType {
   registerUser: (userData: any) => Promise<void>;
   addCategory: (name: string, description?: string) => Promise<void>;
   removeCategory: (id: string) => Promise<void>;
+  fetchEvents: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -81,6 +83,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [products, setProducts] = useState<Product[]>([]);
   const [sales, setSales] = useState<Sale[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
   // Initialize from localStorage
@@ -101,6 +104,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setCategories([]);
     }
   }, [user]);
+
+  const fetchEvents = async () => {
+    if (user && user.role === 'admin') {
+      try {
+        const eventsData = await api.getEvents();
+        setEvents(eventsData);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    }
+  };
 
   const refreshData = async () => {
     setLoading(true);
@@ -142,6 +156,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setProducts(mappedProducts);
       setSales(mappedSales);
       setCategories(mappedCategories);
+
+      if (user && user.role === 'admin') {
+        await fetchEvents().catch(() => {});
+      }
     } catch (error) {
       console.error('Error loading data:', error);
       // Don't clear products if sales fail (e.g. worker role)
@@ -157,8 +175,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setUser(userData);
       localStorage.setItem('user', JSON.stringify(userData));
       return true;
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      toast.error(error.message || 'Usuario y/o contraseña incorrectos');
       return false;
     }
   };
@@ -271,6 +290,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         products,
         sales,
         categories,
+        events,
         loading,
         login,
         logout,
@@ -283,6 +303,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         registerUser,
         addCategory,
         removeCategory,
+        fetchEvents,
       }}
     >
       {children}

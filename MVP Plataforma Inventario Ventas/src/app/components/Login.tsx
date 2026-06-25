@@ -19,8 +19,6 @@ export function Login() {
     
     if (await login(username, password)) {
       toast.success('Inicio de sesión exitoso');
-    } else {
-      toast.error('Credenciales incorrectas');
     }
     setLoading(false);
   };

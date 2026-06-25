@@ -12,7 +12,8 @@ import {
   Users,
   CalendarDays,
   Menu,
-  X
+  X,
+  History
 } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/app/components/ui/sheet';
 
@@ -32,6 +33,7 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
     { id: 'sales', label: 'Ventas', icon: ShoppingCart, roles: ['admin', 'worker'] },
     { id: 'statistics', label: 'Estadísticas', icon: BarChart3, roles: ['admin'] },
     { id: 'users', label: 'Usuarios', icon: Users, roles: ['admin'] },
+    { id: 'events', label: 'Auditoría', icon: History, roles: ['admin'] },
     { id: 'settings', label: 'Configuración', icon: Settings, roles: ['admin'] },
   ];
 

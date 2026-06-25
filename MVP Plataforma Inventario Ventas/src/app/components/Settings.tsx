@@ -152,7 +152,7 @@ export function Settings() {
               <strong className="text-slate-900">Sistema de Gestión de Papelería v1.0</strong>
             </p>
             <p>
-              MVP funcional diseñado para el manejo eficiente de inventario y ventas en negocios de papelería.
+              Sistema diseñado para el manejo eficiente de inventario y ventas en negocios de papelería.
             </p>
             <div className="pt-4 border-t border-slate-200">
               <p className="font-medium text-slate-900 mb-2">Características:</p>
@@ -166,11 +166,6 @@ export function Settings() {
                 <li>Sistema de roles (Administrador y Trabajador)</li>
                 <li>Interfaz optimizada para pantallas táctiles</li>
               </ul>
-            </div>
-            <div className="pt-4 border-t border-slate-200">
-              <p className="text-xs text-slate-500">
-                Nota: Este es un MVP funcional. Para producción, conecta a tu backend con Express y MongoDB Atlas.
-              </p>
             </div>
           </div>
         </CardContent>

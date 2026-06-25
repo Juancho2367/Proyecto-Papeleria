@@ -1,4 +1,15 @@
-const API_URL = 'https://proyecto-papeleria-back.vercel.app/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://proyecto-papeleria-back.vercel.app/api';
+
+const translateError = (message: string): string => {
+  const dictionary: Record<string, string> = {
+    'Invalid email or password': 'Usuario y/o contraseña incorrectos',
+    'User already exists': 'El nombre de usuario ya está registrado',
+    'Invalid user data': 'Los datos del usuario son inválidos o están incompletos',
+    'Error en login': 'Error al iniciar sesión',
+    'Error en registro': 'Error al registrar el usuario'
+  };
+  return dictionary[message] || message;
+};
 
 const getHeaders = () => {
   const user = JSON.parse(localStorage.getItem('user') || 'null');
@@ -12,17 +23,18 @@ const getHeaders = () => {
 };
 
 export const api = {
-  login: async (username, password) => {
+  login: async (username: string, password: string): Promise<any> => {
     const res = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
     });
-    if (!res.ok) throw new Error('Error en login');
-    return res.json();
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(translateError(data.message || 'Error en login'));
+    return data;
   },
 
-  getProducts: async () => {
+  getProducts: async (): Promise<any[]> => {
     const res = await fetch(`${API_URL}/products`, {
       headers: getHeaders(),
     });
@@ -30,7 +42,7 @@ export const api = {
     return res.json();
   },
 
-  createProduct: async (product) => {
+  createProduct: async (product: any): Promise<any> => {
     const res = await fetch(`${API_URL}/products`, {
       method: 'POST',
       headers: getHeaders(),
@@ -40,7 +52,7 @@ export const api = {
     return res.json();
   },
 
-  updateProduct: async (id, product) => {
+  updateProduct: async (id: string, product: any): Promise<any> => {
     const res = await fetch(`${API_URL}/products/${id}`, {
       method: 'PUT',
       headers: getHeaders(),
@@ -50,7 +62,7 @@ export const api = {
     return res.json();
   },
   
-  deleteProduct: async (id) => {
+  deleteProduct: async (id: string): Promise<any> => {
     const res = await fetch(`${API_URL}/products/${id}`, {
       method: 'DELETE',
       headers: getHeaders(),
@@ -59,7 +71,7 @@ export const api = {
     return res.json();
   },
 
-  getSales: async () => {
+  getSales: async (): Promise<any[]> => {
     const res = await fetch(`${API_URL}/sales`, {
       headers: getHeaders(),
     });
@@ -67,7 +79,7 @@ export const api = {
     return res.json();
   },
 
-  createSale: async (saleData) => {
+  createSale: async (saleData: any): Promise<any> => {
     const res = await fetch(`${API_URL}/sales`, {
       method: 'POST',
       headers: getHeaders(),
@@ -78,18 +90,18 @@ export const api = {
     return data;
   },
 
-  register: async (userData) => {
+  register: async (userData: any): Promise<any> => {
     const res = await fetch(`${API_URL}/auth/register`, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify(userData),
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Error al registrar usuario');
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(translateError(data.message || 'Error al registrar usuario'));
     return data;
   },
 
-  getCategories: async () => {
+  getCategories: async (): Promise<any[]> => {
     const res = await fetch(`${API_URL}/categories`, {
       headers: getHeaders(),
     });
@@ -97,7 +109,7 @@ export const api = {
     return res.json();
   },
 
-  createCategory: async (categoryData) => {
+  createCategory: async (categoryData: any): Promise<any> => {
     const res = await fetch(`${API_URL}/categories`, {
       method: 'POST',
       headers: getHeaders(),
@@ -108,12 +120,20 @@ export const api = {
     return data;
   },
 
-  deleteCategory: async (id) => {
+  deleteCategory: async (id: string): Promise<any> => {
     const res = await fetch(`${API_URL}/categories/${id}`, {
       method: 'DELETE',
       headers: getHeaders(),
     });
     if (!res.ok) throw new Error('Error al eliminar categoría');
+    return res.json();
+  },
+
+  getEvents: async (): Promise<any[]> => {
+    const res = await fetch(`${API_URL}/events`, {
+      headers: getHeaders(),
+    });
+    if (!res.ok) throw new Error('Error al obtener el historial de eventos');
     return res.json();
   }
 };

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Sale = require('../models/Sale');
 const Product = require('../models/Product');
+const { logEvent } = require('../utils/eventLogger');
 
 // @desc    Get all sales
 // @route   GET /api/sales
@@ -78,6 +79,8 @@ exports.createSale = async (req, res) => {
 
     await sale.save({ session });
     await session.commitTransaction();
+
+    await logEvent(req.user.id, 'Registro de Venta', `Se registró una venta por un total de $${totalAmount.toLocaleString('es-CO')} COP utilizando método de pago: ${paymentMethod === 'cash' ? 'Efectivo' : 'Transferencia'}.`);
 
     res.status(201).json({ success: true, data: sale });
 
