@@ -52,9 +52,21 @@ app.use('/api/sales', require('./routes/saleRoutes'));
 app.use('/api/categories', require('./routes/categoryRoutes'));
 app.use('/api/events', require('./routes/eventRoutes'));
 
-// Root route for testing
+// Root route for testing and diagnostics
 app.get('/', (req, res) => {
-  res.send('API Papelería Running...');
+  const mongoose = require('mongoose');
+  const readyStates = {
+    0: 'disconnected',
+    1: 'connected',
+    2: 'connecting',
+    3: 'disconnecting'
+  };
+  res.json({
+    status: 'running',
+    environment: process.env.NODE_ENV || 'not-set',
+    mongoUriConfigured: !!(process.env.MONGO_URI || process.env.MONGODB_URI),
+    databaseState: readyStates[mongoose.connection.readyState] || 'unknown'
+  });
 });
 
 const PORT = process.env.PORT || 5001;
