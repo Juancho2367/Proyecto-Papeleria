@@ -1,4 +1,8 @@
-const API_URL = import.meta.env.VITE_API_URL || 'https://proyecto-papeleria-back.vercel.app/api';
+let baseUrl = import.meta.env.VITE_API_URL || 'https://proyecto-papeleria-back.vercel.app/api';
+if (!baseUrl.endsWith('/api') && !baseUrl.endsWith('/api/')) {
+  baseUrl = baseUrl.replace(/\/$/, '') + '/api';
+}
+const API_URL = baseUrl;
 
 const translateError = (message: string): string => {
   const dictionary: Record<string, string> = {
